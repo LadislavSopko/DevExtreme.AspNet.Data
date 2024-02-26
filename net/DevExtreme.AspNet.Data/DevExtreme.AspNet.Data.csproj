@@ -56,12 +56,12 @@
     </Compile>
   </ItemGroup>
 
-  <Target Name="PublishNuget" Condition="'$(Configuration)|$(Platform)' == 'MakeNuget|AnyCPU'" AfterTargets="pack">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
-    </GetAssemblyIdentity>
-    <Message Text="PublishNuget" />
-    <Exec Command="dotnet nuget push bin\MakeNuget\$(PackageId).$(MainVersion).nupkg --source ZeroX-3u-gitlab  --skip-duplicate" />
-  </Target>
+    <Target Name="PublishNuget" Condition="'$(Configuration)|$(Platform)' == 'MakeNuget|AnyCPU'" AfterTargets="pack">
+        <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+            <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+        </GetAssemblyIdentity>
+        <Message Text="PublishNuget" />
+        <Exec Command="dotnet nuget push bin\MakeNuget\$(PackageId).$(MainVersion).nupkg --source $(NugetRepository)  --skip-duplicate" />
+    </Target>
 
 </Project>
