@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DevExtreme.AspNet.Data {
 
-    public static class ObjectExtensions {
+    internal static class ObjectExtensions {
         public static bool In<T>(this T obj, IEnumerable<T> values) {
             return values.Contains(obj);
         }
