@@ -1,4 +1,5 @@
 ﻿using DevExtreme.AspNet.Data.Helpers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,12 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DevExtreme.AspNet.Data {
+
+    public static class ObjectExtensions {
+        public static bool In<T>(this T obj, IEnumerable<T> values) {
+            return values.Contains(obj);
+        }
+    }
 
     public class HelperExpressionCompiler : ExpressionCompiler {
 
@@ -78,7 +85,11 @@ namespace DevExtreme.AspNet.Data {
             CONTAINS = "contains",
             NOT_CONTAINS = "notcontains",
             STARTS_WITH = "startswith",
-            ENDS_WITH = "endswith";
+            NOT_STARTS_WITH = "notstartswith",
+            ENDS_WITH = "endswith",
+            NOT_ENDS_WITH = "notendswith",
+            IN = "in",
+            NOT_IN = "notin";
 
         bool _stringToLower;
 
@@ -118,7 +129,8 @@ namespace DevExtreme.AspNet.Data {
             var clientAccessor = Convert.ToString(criteriaJson[0]);
             var clientOperation = hasExplicitOperation ? Convert.ToString(criteriaJson[1]).ToLower() : "=";
             var clientValue = Utils.UnwrapNewtonsoftValue(criteriaJson[hasExplicitOperation ? 2 : 1]);
-            var isStringOperation = clientOperation == CONTAINS || clientOperation == NOT_CONTAINS || clientOperation == STARTS_WITH || clientOperation == ENDS_WITH;
+            var isStringOperation = clientOperation == CONTAINS || clientOperation == NOT_CONTAINS || clientOperation == STARTS_WITH || clientOperation == ENDS_WITH || clientOperation == NOT_STARTS_WITH || clientOperation == NOT_ENDS_WITH;
+            var isArrayOperation = clientOperation == IN || clientOperation == NOT_IN;
 
             if(CustomFilterCompilers.Binary.CompilerFuncs.Count > 0) {
                 var customResult = CustomFilterCompilers.Binary.TryCompile(new BinaryExpressionInfo {
@@ -143,6 +155,9 @@ namespace DevExtreme.AspNet.Data {
 
             if(isStringOperation) {
                 return CompileStringFunction(accessorExpr, clientOperation, Convert.ToString(clientValue));
+
+            } else if(isArrayOperation) {
+                return CompileArrayFunction(accessorExpr, clientOperation, clientValue);
 
             } else {
                 var useDynamicBinding = accessorExpr.Type == typeof(Object);
@@ -293,12 +308,69 @@ namespace DevExtreme.AspNet.Data {
                 invert = true;
             }
 
+            if(clientOperation == NOT_ENDS_WITH) {
+                clientOperation = ENDS_WITH;
+                invert = true;
+            }
+
+            if(clientOperation == NOT_STARTS_WITH) {
+                clientOperation = STARTS_WITH;
+                invert = true;
+            }
+
             if(GuardNulls)
                 accessorExpr = Expression.Coalesce(accessorExpr, Expression.Constant(""));
 
             var operationMethod = typeof(String).GetMethod(GetStringOperationMethodName(clientOperation), new[] { typeof(String) });
 
             Expression result = Expression.Call(accessorExpr, operationMethod, Expression.Constant(value));
+
+            if(invert)
+                result = Expression.Not(result);
+
+            return result;
+        }
+
+        Expression CompileArrayFunction(Expression accessorExpr, string clientOperation, object value) {
+            
+            var invert = false;
+
+            if(clientOperation == NOT_IN) {
+                clientOperation = IN;
+                invert = true;
+            }
+
+            if(GuardNulls)
+                accessorExpr = Expression.Coalesce(accessorExpr, Expression.Constant(""));
+
+            var operationMethod = typeof(ObjectExtensions).GetMethod(nameof(ObjectExtensions.In));
+            operationMethod = operationMethod.MakeGenericMethod(accessorExpr.Type);
+
+            
+            if(value is ICollection<JToken> tokens) {
+                value = tokens.Select(t => Utils.ConvertClientValue(t, accessorExpr.Type));
+            } 
+
+            IList castedList;
+            ParameterExpression inputEnumerable = Expression.Parameter(typeof(IEnumerable), "enumerable");
+            MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod(accessorExpr.Type);
+            MethodCallExpression castCall = Expression.Call(castMethod, inputEnumerable);
+            MethodInfo toListMethod = typeof(Enumerable).GetMethod("ToList").MakeGenericMethod(accessorExpr.Type);
+            MethodCallExpression toListCall = Expression.Call(toListMethod, castCall);
+            var lambda = Expression.Lambda<Func<IEnumerable, IList>>(
+                toListCall,
+                inputEnumerable
+            );
+            Func<IEnumerable, IList> castDelegate = lambda.Compile();
+
+            if(value is IEnumerable enumerable) {
+                castedList = castDelegate(enumerable);
+            } else {
+                castedList = castDelegate(new object[0]);
+            }
+
+            Expression result = Expression.Call(null, operationMethod, accessorExpr, Expression.Constant(castedList));
+            
 
             if(invert)
                 result = Expression.Not(result);

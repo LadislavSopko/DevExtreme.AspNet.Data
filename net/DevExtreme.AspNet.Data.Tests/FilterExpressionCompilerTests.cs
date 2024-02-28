@@ -22,6 +22,19 @@ namespace DevExtreme.AspNet.Data.Tests {
             return new FilterExpressionCompiler(typeof(T), guardNulls).Compile(criteria);
         }
 
+
+        [Fact]
+        public void ValueInCollection() {
+            var expr = Compile<DataItem1>(new object[] { "IntProp", "in", new object[] { 1, 2, 3, 4, 5 } });
+            Assert.Equal("obj.IntProp.In(value(System.Collections.Generic.List`1[System.Int32]))", expr.Body.ToString());
+        }
+
+        [Fact]
+        public void ValueInCollectionJson() {
+            var expr = Compile<DataItem1>(JsonConvert.DeserializeObject<IList>("[\"IntProp\", \"in\", [1, 2, 3, 4, 5]]"));
+            Assert.Equal("obj.IntProp.In(value(System.Collections.Generic.List`1[System.Int32]))", expr.Body.ToString());
+        }
+
         [Fact]
         public void ImplicitEquals() {
             var expr = Compile<DataItem1>(new object[] { "IntProp", 123 });
