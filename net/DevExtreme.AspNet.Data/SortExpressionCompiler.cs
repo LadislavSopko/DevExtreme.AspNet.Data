@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DevExtreme.AspNet.Data {
 
-    class SortExpressionCompiler : ExpressionCompiler {
+    public class SortExpressionCompiler : ExpressionCompiler {
 
         public SortExpressionCompiler(Type itemType, bool guardNulls)
             : base(itemType, guardNulls) {

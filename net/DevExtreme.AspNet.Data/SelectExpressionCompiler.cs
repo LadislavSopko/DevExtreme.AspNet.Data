@@ -8,10 +8,14 @@ using System.Text;
 
 namespace DevExtreme.AspNet.Data {
 
-    class SelectExpressionCompiler : ExpressionCompiler {
+    public class SelectExpressionCompiler : ExpressionCompiler {
         AnonTypeNewTweaks _anonTypeNewTweaks;
 
-        public SelectExpressionCompiler(Type itemType, bool guardNulls, AnonTypeNewTweaks anonTypeNewTweaks = null)
+        public SelectExpressionCompiler(Type itemType, bool guardNulls)
+            : this(itemType, guardNulls, null) {
+        }
+
+        internal SelectExpressionCompiler(Type itemType, bool guardNulls, AnonTypeNewTweaks anonTypeNewTweaks = null)
             : base(itemType, guardNulls) {
             _anonTypeNewTweaks = anonTypeNewTweaks;
         }
