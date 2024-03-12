@@ -3,14 +3,14 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace DevExtreme.AspNet.Data.Async {
-    using RegisteredAdapters = Dictionary<Type, Tuple<Func<Type, bool>, IAsyncAdapter>>;
+    using RegisteredAdapters = System.Collections.Concurrent.ConcurrentDictionary<Type, Tuple<Func<Type, bool>, IAsyncAdapter>>;
 
     public static class CustomAsyncAdapters {
         static readonly RegisteredAdapters _registeredAdapters = new RegisteredAdapters();
 
         public static void RegisterAdapter(Type t,Func<Type, bool> queryProviderTypePredicate, IAsyncAdapter adapter) {
             if(!_registeredAdapters.ContainsKey(t)) {
-                _registeredAdapters.Add(t, Tuple.Create(queryProviderTypePredicate, adapter));
+                _registeredAdapters.TryAdd(t, Tuple.Create(queryProviderTypePredicate, adapter));
             }
         }
 
