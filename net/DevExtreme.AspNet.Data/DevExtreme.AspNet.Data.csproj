@@ -23,8 +23,8 @@
     <DocumentationFile>bin\Debug\$(TargetFramework)\DevExtreme.AspNet.Data.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <!--<SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>Local.snk</AssemblyOriginatorKeyFile>-->
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    
   </PropertyGroup>
 
   <ItemGroup>
