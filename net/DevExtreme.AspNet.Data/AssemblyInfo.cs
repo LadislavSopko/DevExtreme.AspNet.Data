@@ -9,6 +9,6 @@ using System.Runtime.CompilerServices;
 #endif
 [assembly: CLSCompliant(true)]
 
-#if !DEBUG
-[assembly: AssemblyKeyFile("local.snk")]
-#endif
+//#if !DEBUG
+//[assembly: AssemblyKeyFile("local.snk")]
+//#endif
