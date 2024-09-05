@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Sample.Models {
 
@@ -127,5 +125,6 @@ namespace Sample.Models {
                     .HasConstraintName("FK_Products_Categories");
             });
         }
+
     }
 }
