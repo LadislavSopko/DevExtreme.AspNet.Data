@@ -14,6 +14,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://secure.gravatar.com/avatar/6b38f1e9ffd8b069bcdc2741934fdbcf?s=512&amp;r=g</PackageIconUrl>
     <Configurations>Debug;Release;MakeNuget</Configurations>
+    
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,24 +26,25 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!--<SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Local.snk</AssemblyOriginatorKeyFile>-->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+  <!--<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
-  </ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>-->
   
   <!--<ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>-->
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.1" />
+    <PackageReference Include="Microsoft.CSharp"  />
+    <PackageReference Include="System.Text.Json"  />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.30.0" />
+    <PackageReference Include="MongoDB.Bson"  />
   </ItemGroup>
 
   <ItemGroup>
