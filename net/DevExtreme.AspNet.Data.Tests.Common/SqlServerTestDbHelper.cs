@@ -28,6 +28,7 @@ namespace DevExtreme.AspNet.Data.Tests {
         public void ResetDatabase() {
             // Possibly related: https://stackoverflow.com/a/46142857
 
+#pragma warning disable CS0618 // Type or member is obsolete
             using(var conn = new SqlConnection($"Data Source={LOCAL_DB}")) {
                 conn.Open();
 
@@ -45,6 +46,7 @@ namespace DevExtreme.AspNet.Data.Tests {
 
                 Exec($"create database [{_dbName}] on (name='{_dbName}', filename='{_dbFilePath}')");
             }
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
     }
