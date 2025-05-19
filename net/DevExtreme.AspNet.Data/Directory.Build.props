@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-        <MainVersion>4.9.2</MainVersion> <!-- 9 is for 3U-->
+        <MainVersion>4.9.21</MainVersion> <!-- 9 is for 3U-->
         <!--<PublishNugetFeed>ZeroX-3u-gitlab</PublishNugetFeed>-->
         <PublishNugetFeed>Treu-Cloud-Nugets</PublishNugetFeed>
     </PropertyGroup>
